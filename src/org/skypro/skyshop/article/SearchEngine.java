@@ -1,28 +1,26 @@
 package org.skypro.skyshop.article;
 
 import org.skypro.skyshop.article.Searchable;
-
 import java.util.*;
 
 public class SearchEngine {
-    private final Map<String, Searchable> registry = new HashMap<>();
-
+    private final Set<Searchable> registry = new HashSet<>();
 
     public void register(Searchable item) {
-        registry.put(item.getName(), item);
+        registry.add(item);
     }
 
-    public Map<String, Searchable> search(String query) {
+    public Set<String> search(String query) {
         if (query == null || query.trim().isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptySet();
         }
 
         String lowerQuery = query.trim().toLowerCase();
-        Map<String, Searchable> result = new TreeMap<>();
+        Set<String> result = new TreeSet<>();
 
-        for (Map.Entry<String, Searchable> entry : registry.entrySet()) {
-            if (entry.getKey().toLowerCase().contains(lowerQuery)) {
-                result.put(entry.getKey(), entry.getValue());
+        for (Searchable item : registry) {
+            if (item.getName().toLowerCase().contains(lowerQuery)) {
+                result.add(item.getName());
             }
         }
 
