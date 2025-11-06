@@ -33,6 +33,7 @@ class Main {
         return results;
     }
 }
+
 class SearchableItem implements Searchable {
     private final String name;
 
