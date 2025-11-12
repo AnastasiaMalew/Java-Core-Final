@@ -2,25 +2,13 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-
 import java.util.*;
 
 public class ProductBasket {
-    private Map<String, List<Product>> products = new HashMap<>();
+    private Set<Product> products = new HashSet<>();
 
     public void addProduct(Product product) {
-        products.computeIfAbsent(product.getName(), k -> new ArrayList<>()).add(product);
-    }
-
-    public List<Product> removeProducts(String productName) {
-        return products.remove(productName) != null
-                ? products.remove(productName)
-                : Collections.emptyList();
-    }
-
-    public List<Product> getProductsByName(String productName) {
-        List<Product> result = products.get(productName);
-        return result != null ? result : Collections.emptyList();
+        products.add(product);
     }
 
     public boolean isEmpty() {
@@ -34,13 +22,21 @@ public class ProductBasket {
         }
 
         System.out.println("Содержимое корзины:");
-        for (Map.Entry<String, List<Product>> entry : products.entrySet()) {
-            String productName = entry.getKey();
-            List<Product> productList = entry.getValue();
+        Map<String, Integer> productCountMap = new HashMap<>();
+        for (Product product : products) {
+            productCountMap.put(product.getName(), productCountMap.getOrDefault(product.getName(), 0) + 1);
+        }
 
-            System.out.println(productName + " (" + productList.size() + " шт.):");
-            for (Product product : productList) {
-                System.out.println(" - " + product.getName() + ", цена: " + product.getPrice() + " руб.");
+        for (Map.Entry<String, Integer> entry : productCountMap.entrySet()) {
+            String productName = entry.getKey();
+            int count = entry.getValue();
+            System.out.println(productName + " (" + count + " шт.):");
+                Optional<Product> exampleProduct = products.stream()
+                    .filter(p -> p.getName().equals(productName))
+                    .findFirst();
+
+            if (exampleProduct.isPresent()) {
+                System.out.println(" - Цена за шт.: " + exampleProduct.get().getPrice() + " руб.");
             }
         }
     }
